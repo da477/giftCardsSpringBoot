@@ -1,6 +1,5 @@
 package org.da477.springsecurity.model;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
@@ -22,10 +21,8 @@ public enum Role {
     }
 
     public Set<SimpleGrantedAuthority> getAuthorities() {
-        return permissions.stream()
-                .map(p -> new SimpleGrantedAuthority(p.getPermission()))
+        return getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
                 .collect(Collectors.toSet());
-
     }
-
 }

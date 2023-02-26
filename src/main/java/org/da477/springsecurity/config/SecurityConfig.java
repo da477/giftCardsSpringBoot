@@ -1,15 +1,17 @@
 package org.da477.springsecurity.config;
 
-import org.da477.springsecurity.security.JwtConfigurer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -19,67 +21,38 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    DAO
-//    private final UserDetailsService userDetailService;
-//    @Autowired
-//    public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailService) {
-//        this.userDetailService = userDetailService;
-//    }
-    //DAO
-    //    @Bean
-//    protected DaoAuthenticationProvider daoAuthenticationProvider() {
-//        DaoAuthenticationProvider daoAuthProvider = new DaoAuthenticationProvider();
-//        daoAuthProvider.setPasswordEncoder(passwordEncoder());
-//        daoAuthProvider.setUserDetailsService(userDetailService);
-//        return daoAuthProvider;
-//    }
+    private final UserDetailsService userDetailService;
 
-    private final JwtConfigurer jwtConfigurer;
-
-    public SecurityConfig(JwtConfigurer jwtConfigurer) {
-        this.jwtConfigurer = jwtConfigurer;
+    @Autowired
+    public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailService) {
+        this.userDetailService = userDetailService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //              +JWT token
         http
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/api/v1/auth/login").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .apply(jwtConfigurer);
-
-//                  DAO
-//        http
-//                .csrf().disable()
-//                .authorizeRequests()
-//                .antMatchers("/").permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .formLogin() // .httpBasic(); //base64 login:pass without own forms
-//                .loginPage("/auth/login").permitAll()
-//                .defaultSuccessUrl("/auth/success")
-//                .and()
-//                .logout()
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
-//                .invalidateHttpSession(true)
-//                .clearAuthentication(true)
-//                .deleteCookies("JSESSION")
-//                .logoutSuccessUrl("/auth/login");
+                .formLogin() // .httpBasic(); //base64 login:pass without own forms
+                .loginPage("/auth/login").permitAll()
+                .defaultSuccessUrl("/auth/success")
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSION")
+                .logoutSuccessUrl("/auth/login");
     }
 
-//        DAO
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider(daoAuthenticationProvider());
-//    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(daoAuthenticationProvider());
+    }
 
 
     @Bean
@@ -88,27 +61,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
+    //https://bcrypt-generator.com/
     @Bean
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 
-
-//    @Bean
-//    @Override
-//    protected UserDetailsService userDetailsService() {
-//        return new InMemoryUserDetailsManager(
-//                User.builder()
-//                        .username("admin")
-//                        .password(passwordEncoder().encode("admin"))
-//                        .authorities(Role.ADMIN.getAuthorities())
-//                        .build(),
-//                User.builder()
-//                        .username("user")
-//                        .password(passwordEncoder().encode("user"))
-//                        .authorities(Role.USER.getAuthorities())
-//                        .build()
-//        );
-//    }
-
+    @Bean
+    protected DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthProvider = new DaoAuthenticationProvider();
+        daoAuthProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthProvider.setUserDetailsService(userDetailService);
+        return daoAuthProvider;
+    }
 }

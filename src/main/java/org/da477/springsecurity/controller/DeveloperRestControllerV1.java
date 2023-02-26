@@ -1,6 +1,11 @@
-package org.da477.springsecurity.rest;
+package org.da477.springsecurity.controller;
 
 import org.da477.springsecurity.model.Developer;
+import org.da477.springsecurity.repository.DeveloperRepository;
+import org.da477.springsecurity.service.DeveloperService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,36 +17,36 @@ import java.util.stream.Stream;
 @RequestMapping("/api/v1/developers")
 public class DeveloperRestControllerV1 {
 
-    private final List<Developer> DEVELOPERS = Stream.of(
-            new Developer(1L, "Ivan", "Ivanov"),
-            new Developer(2L, "Sergey", "Sergeev"),
-            new Developer(3L, "Petr", "Petrov")
-    ).collect(Collectors.toList());
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private DeveloperService devService;
 
     @GetMapping
     public List<Developer> getAll() {
-        return DEVELOPERS;
+        log.info("getAll()");
+        return devService.findAll();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('developer:read')")
+//    @PreAuthorize("hasAuthority('developer:read')")
     public Developer getById(@PathVariable Long id) {
-        return DEVELOPERS.stream()
-                .filter(d -> d.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        log.info("get developer {}", id);
+        return devService.getById(id);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('developer:write')")
     public Developer create(@PathVariable Developer developer) {
-        DEVELOPERS.add(developer);
+        log.info("add developer {}", developer.toString());
+        devService.add(developer);
         return developer;
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('developer:write')")
     public void deleteById(@PathVariable Long id) {
-        DEVELOPERS.removeIf(dev -> dev.getId().equals(id));
+        getAll().removeIf(dev -> dev.getId().equals(id));
     }
+
 }

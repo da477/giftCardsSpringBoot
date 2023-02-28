@@ -33,11 +33,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+
+//                .antMatchers("/api/v1/developers/**").hasAuthority("ROLE_ADMIN")
+//                .antMatchers("/api/v1/developers/**").hasRole("ADMIN")
+//                .antMatchers("/api/v1/developers/**").hasAuthority("developer:read")
+
                 .antMatchers("/").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .formLogin() // .httpBasic(); //base64 login:pass without own forms
+                .formLogin()
                 .loginPage("/auth/login").permitAll()
                 .defaultSuccessUrl("/auth/success")
                 .and()

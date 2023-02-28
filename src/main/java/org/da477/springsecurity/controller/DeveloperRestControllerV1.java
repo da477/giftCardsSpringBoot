@@ -30,6 +30,8 @@ public class DeveloperRestControllerV1 {
 
     @GetMapping("/{id}")
 //    @PreAuthorize("hasAuthority('developer:read')")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Developer getById(@PathVariable Long id) {
         log.info("get developer {}", id);
         return devService.getById(id);

@@ -23,7 +23,6 @@ public class User {
     private String last_name;
 
     @Column(name = "password", nullable = false)
-//    @NotBlank
     private String password;
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)

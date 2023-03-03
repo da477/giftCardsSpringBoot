@@ -1,7 +1,6 @@
 package org.da477.springsecurity.controller;
 
 import org.da477.springsecurity.model.Developer;
-import org.da477.springsecurity.repository.DeveloperRepository;
 import org.da477.springsecurity.service.DeveloperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +9,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/developers")

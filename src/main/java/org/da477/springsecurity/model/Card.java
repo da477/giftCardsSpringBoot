@@ -14,10 +14,10 @@ public class Card {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "number")
-    private Integer number;
+    private Long number;
 
     @Column(name = "amount")
     private Float amount;
@@ -27,6 +27,14 @@ public class Card {
 
     @Column(name = "isprint")
     private boolean isPrint;
+
+    @Column(name = "isgenerated")
+    private boolean isGenerated;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "typecard")
+    @NotNull
+    private TypeCard typeCard;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
@@ -40,4 +48,10 @@ public class Card {
     @NotNull
     private Date lastUpdate = new Date();
 
+    @Column(name = "owner_id")
+    private String owner_id;
+
+    public Card() {
+
+    }
 }

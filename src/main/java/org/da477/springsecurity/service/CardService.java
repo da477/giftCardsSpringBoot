@@ -2,7 +2,6 @@ package org.da477.springsecurity.service;
 
 import org.da477.springsecurity.model.Card;
 import org.da477.springsecurity.repository.CardRepository;
-import org.da477.springsecurity.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +32,12 @@ public class CardService {
 
     public void add(Card card) {
 
-        Integer newNumber = null;
+        int newNumber;
 
-        Long start = System.currentTimeMillis();
-        String result = "";
+        int start = (int) System.currentTimeMillis();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i < 10; i++) {
-            newNumber = random.nextInt(Integer.getInteger(start.toString()), Integer.MAX_VALUE);
+            newNumber = random.nextInt(start, Integer.MAX_VALUE);
             if (getByNumber(newNumber) == null) {
                 break;
             }
@@ -48,8 +46,8 @@ public class CardService {
 //        if (newNumber == null) {
 //            throw new NotFoundException("Valid number wasn't generated for a new Card.");
 //        }
-//
 //        card.setNumber(newNumber);
+
         repository.save(card);
 
     }

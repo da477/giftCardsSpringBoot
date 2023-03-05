@@ -13,15 +13,6 @@ create table users
 );
 create unique index users_email_uindex on users (email);
 
--- DROP TABLE IF EXISTS developers;
--- CREATE TABLE developers
--- (
---     id         bigserial     NOT NULL,
---     firstName  varchar(50)   NOT NULL,
---     lastName   varchar(100)  NOT NULL,
---     CONSTRAINT developers_pk PRIMARY KEY(id)
--- );
-
 DROP TABLE IF EXISTS giftcards;
 CREATE TABLE giftCards
 (

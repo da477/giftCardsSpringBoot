@@ -32,9 +32,9 @@ CREATE TABLE giftCards
     status      varchar(20) default 'NEW'::character varying        not null,
     isGenerated boolean,
     typeCard    varchar(20) default 'SIMPLE'::character varying     not null,
-    registered  timestamp   default now()                           not null,
+    registered  timestamp   default now(),
     withdrawal  decimal,
-    lastUpdate  timestamp   default now()                           not null,
+    lastUpdate  timestamp   default now(),
     owner_id    varchar(20)
 );
 create unique index giftCards_number_index on giftCards (number);

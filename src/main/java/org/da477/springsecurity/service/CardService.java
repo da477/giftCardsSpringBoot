@@ -1,6 +1,7 @@
 package org.da477.springsecurity.service;
 
 import org.da477.springsecurity.model.Card;
+import org.da477.springsecurity.model.Status;
 import org.da477.springsecurity.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,33 +23,47 @@ public class CardService {
         return repository.findAll();
     }
 
+    public List<Card> findAllByStatus(Status status) {
+        return repository.findAllByStatus(status);
+    }
+
     public Card getById(int id) {
         return repository.findById(id).orElse(null);
     }
 
-    public Card getByNumber(int number) {
+    public Card getByNumber(Long number) {
         return repository.findByNumber(number).orElse(null);
+    }
+
+    public Card create(Card card) {
+        if (card.isNew()) {
+            add(card);
+        } else {
+            update(card);
+        }
+        return card;
     }
 
     public void add(Card card) {
 
-        int newNumber;
+        Long newNumber = null;
 
-        int start = (int) System.currentTimeMillis();
+        long start = System.currentTimeMillis();
+        long max = (long) Integer.MAX_VALUE * (long) 10;
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i < 10; i++) {
-            newNumber = random.nextInt(start, Integer.MAX_VALUE);
+            newNumber = random.nextLong(start + 1, max);
             if (getByNumber(newNumber) == null) {
                 break;
             }
         }
 
-//        if (newNumber == null) {
-//            throw new NotFoundException("Valid number wasn't generated for a new Card.");
-//        }
-//        card.setNumber(newNumber);
-
-        repository.save(card);
+        if (newNumber.equals(null) || newNumber.equals(0L)) {
+            // do nothing
+        } else {
+            card.setNumber(newNumber);
+            repository.save(card);
+        }
 
     }
 
@@ -57,6 +72,10 @@ public class CardService {
             repository.save(card);
 //            logger.info("update {} with Number={}", card, card.getNumber());
         }
+    }
+
+    public void delete() {
+        throw new UnsupportedOperationException();
     }
 
 

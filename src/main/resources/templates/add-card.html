@@ -6,9 +6,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Add Card</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="../css/shards.min.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 </head>
 
 <body>
@@ -23,21 +24,34 @@
                 <form action="#" th:action="@{/cards/add}" th:object="${card}" method="post">
                     <div class="row">
                         <div class="form-group col-md-8">
-<!--                            <label for="name" class="col-form-label">Name</label> <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Name"> <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>-->
+                            <label for="amount" class="col-form-label">Amount</label>
+                            <input type="number" th:field="*{amount}" class="form-control" id="amount" placeholder=0>
+                            <span th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                                  class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-8">
-<!--                            <label for="email" class="col-form-label">Email</label> <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="Email"> <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>-->
+                            <label for="typeCard" class="col-form-label">Type card</label>
+
+                            <select th:field="*{typeCard}" class="form-control" id="typeCard" placeholder="Type card">
+                                <option th:value="'SIMPLE'" th:text="Simple"></option>
+                                <option th:value="'OTHER'" th:text="Other"></option>
+                                <option th:value="'DISCOUNTED'" th:text="Discounted"></option>
+                                <option th:value="'BANK'" th:text="Bank"></option>
+                            </select>
                         </div>
 
                         <div class="form-group col-md-8">
-<!--                            <label for="phoneNo" class="col-form-label">Phone No</label> <input type="text" th:field="*{phoneNo}" class="form-control" id="phoneNo" placeholder="PhoneNo"> <span th:if="${#fields.hasErrors('phoneNo')}" th:errors="*{phoneNo}" class="text-danger"></span>-->
+                            <label for="owner_id" class="col-form-label">Creator</label>
+                            <input type="text" th:field="*{owner_id}" class="form-control" id="owner_id"
+                                   placeholder="Creator">
+                            <span th:if="${#fields.hasErrors('owner_id')}" th:errors="owner_id"
+                                  class="text-danger"></span>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="form-group col-md-8">
                             <input type="submit" class="btn btn-primary" value="Add Card">
                         </div>
 
-                        <div class="form-group col-md-8"></div>
 
                     </div>
                 </form>
@@ -46,5 +60,3 @@
     </div>
 </div>
 </body>
-
-</html>

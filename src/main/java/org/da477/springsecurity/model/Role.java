@@ -1,28 +1,43 @@
 package org.da477.springsecurity.model;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import lombok.*;
+import org.hibernate.Hibernate;
 
+import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public enum Role {
+@Entity
+@Getter
+@Setter
+@ToString
+@Table(name = "roles")
+public class Role {
 
-    USER(Set.of(Permission.DEVELOPERS_READ)),
-    ADMIN(Set.of(Permission.DEVELOPERS_READ, Permission.DEVELOPERS_WRITE));
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    private final Set<Permission> permissions;
+    @Column(name = "name")
+    private String name;
 
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
+    @ManyToMany(mappedBy = "roles")
+    @ToString.Exclude
+    private Set<User> users;
+
+    public Role() {
     }
 
-    public Set<Permission> getPermissions() {
-        return permissions;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Role role = (Role) o;
+        return id != null && Objects.equals(id, role.id);
     }
 
-    public Set<SimpleGrantedAuthority> getAuthorities() {
-        return getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-                .collect(Collectors.toSet());
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

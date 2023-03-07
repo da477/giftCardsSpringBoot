@@ -23,11 +23,14 @@ public class CardRestControllerV1 {
 
     @GetMapping
     public List<Card> getAll() {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        Object principal = auth.getPrincipal();
         log.info("CardControllerV1 getAll()");
         return cardService.findAll();
-//        return cardService.findAllByStatus(Status.ACTIVE);
+    }
+
+    @GetMapping("/lastOne")
+    public Card getLastOne() {
+        log.info("CardControllerV1 findLastOne()");
+        return cardService.findLastOne();
     }
 
     @GetMapping("/{number}")

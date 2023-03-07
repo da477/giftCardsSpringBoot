@@ -1,7 +1,6 @@
 package org.da477.springsecurity.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -21,12 +19,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailService;
-
     @Autowired
-    public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailService) {
-        this.userDetailService = userDetailService;
-    }
+    private UserDetailsService userDetailService;
+
+    //https://bcrypt-generator.com/
+    public static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(11);
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -34,34 +31,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
 
-                .antMatchers("/api/v1/cards/**").permitAll()
-                .antMatchers("/cards/**").permitAll()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/api/v1/developers/**").permitAll()
-//                .antMatchers("/api/v1/developers/**").hasRole("ADMIN")
-//                .antMatchers("/api/v1/developers/**").hasAuthority("developer:read")
+                .antMatchers("/").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/auth/admin/**").hasRole("ADMIN")
+                .antMatchers("/cards/**").hasRole("ADMIN")
 
                 .antMatchers("/").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
+
                 .formLogin()
                 .loginPage("/auth/login").permitAll()
-                .defaultSuccessUrl("/auth/success")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/auth/login?error")
+
+                .usernameParameter("email")
+                .passwordParameter("password")
+
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
-                .deleteCookies("JSESSION")
-                .logoutSuccessUrl("/auth/login");
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/auth/login?logout");
     }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(daoAuthenticationProvider());
-    }
-
 
     @Bean
     @Override
@@ -69,16 +64,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-    //https://bcrypt-generator.com/
-    @Bean
-    protected PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthProvider = new DaoAuthenticationProvider();
-        daoAuthProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthProvider.setPasswordEncoder(PASSWORD_ENCODER);
         daoAuthProvider.setUserDetailsService(userDetailService);
         return daoAuthProvider;
     }

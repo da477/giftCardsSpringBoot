@@ -14,4 +14,6 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
     Optional<Card> findByNumber(Long number);
 
     List<Card> findAllByStatus(Status status);
+
+    Card findFirstByOrderByNumberDesc();
 }

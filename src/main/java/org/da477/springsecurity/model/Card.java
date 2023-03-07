@@ -1,14 +1,17 @@
 package org.da477.springsecurity.model;
 
 import com.sun.istack.NotNull;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @Table(name = "giftcards")
 public class Card {
 
@@ -21,7 +24,6 @@ public class Card {
     private long number;
 
     @Column(name = "amount")
-    @Min(value = 0, message = "Amount should be greater than 0")
     private Float amount;
 
     @Column(name = "withdrawal")
@@ -67,4 +69,20 @@ public class Card {
     public boolean isNew() {
         return this.id == null || this.id == 0;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Card card = (Card) o;
+        return id != null && Objects.equals(id, card.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+
+
 }

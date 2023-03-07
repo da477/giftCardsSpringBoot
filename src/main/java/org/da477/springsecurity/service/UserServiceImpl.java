@@ -29,12 +29,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
-        user.setName(user.getEmail());
-        user.setSurname(user.getEmail());
+
+        String[] sentences = user.getEmail().split("@");
+
+        user.setName(sentences[0]);
+        user.setSurname(sentences[0]);
+
         Set<Role> roles = new HashSet<>();
         roles.add(roleDao.getReferenceById(1L)); // add: 1,ROLE_USER
         user.setRoles(roles);
+
         user.setStatus(Status.ACTIVE);
+
         userRepository.save(user);
     }
 

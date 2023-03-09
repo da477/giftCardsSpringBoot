@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,21 +15,9 @@
 </head>
 
 <body>
-<div class="container my-2">
-    <h1>Welcome <span th:text="${userName}"/></h1>
+<div th:insert="fragments/bodyHeader"></div>
 
-    <p class="my-2" th:text="${'Current time is ' + #dates.format(message, 'dd-MM-yyyy HH:mm:ss')}">VALUE</p>
-
-    <p class="my-2">--- For EveryOne ---</p>
-    <div th:if="${userName!=''}">
-        <form id="logoutForm" method="POST" action="/auth/logout">
-            <!--            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
-            <button class="btn btn-primary" type="submit">Logout <span th:text="${userName}"/></button>
-        </form>
-    </div>
-    <div th:if="${userName == ''}">
-        <h4 class="text-left"><a href="/auth/login">Log in</a></h4>
-    </div>
+<div class="container py-2 my-2">
 
     <p class="my-2">--- For Admin Only ---</p>
 
@@ -49,7 +37,7 @@
         <a href="/api/v1/cards/lastOne">Rest (/api/v1/cards/lastOne)</a>
     </p>
 </div>
-
+<div th:insert="fragments/footer :: footer">&copy; _2023_</div>
 </body>
 </html>
 

@@ -14,7 +14,7 @@
 <body>
 
 <div class="container py-5">
-    <a class="h2" th:href="@{/}">Home</a>
+    <a th:href="@{/}">Home</a>
     <div class="form-group">
         <h3 class="text-left" th:text="${'Update for ' + card.getNumber()}">VALUE</h3>
         <div class="col-md-6">
@@ -81,13 +81,14 @@
                     <label class="form-check-label" for="isGenerated">Generated</label>
                 </div>
 
-                <div class="form-group col-md-8">
-                    <p class="my-2"
-                       th:text="${'registered: ' + #dates.format(card.getRegistered(), 'dd-MM-yyyy HH:mm:ss')}">
-                        VALUE</p>
-                    <p class="my-2"
-                       th:text="${'lastUpdate: ' + #dates.format(card.getLastUpdate(), 'dd-MM-yyyy HH:mm:ss')}">
-                        VALUE</p>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <p class="my-2"
+                           th:text="${'Registered: '
+                           + #dates.format(card.getRegistered(), 'dd/MM/yy HH:mm:ss') +
+                           ' Update: ' + #dates.format(card.getLastUpdate(), 'dd/MM/yy HH:mm:ss')}"
+                        >VALUE</p>
+                    </div>
                 </div>
 
                 <div class="form-group col-md-6">
@@ -98,8 +99,7 @@
         </div>
     </div>
 </div>
-
+<div th:insert="fragments/footer :: footer">&copy; _2023_</div>
 </body>
-
 
 </html>

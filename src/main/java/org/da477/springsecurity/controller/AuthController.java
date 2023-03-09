@@ -84,6 +84,7 @@ public class AuthController {
         if (principal instanceof org.springframework.security.core.userdetails.User) {
             userName = ((org.springframework.security.core.userdetails.User) principal).getUsername();
             user = userService.findByEmail(userName);
+            userName = userName.split("@")[0];
         }
 
         model.addAttribute("userName", userName);

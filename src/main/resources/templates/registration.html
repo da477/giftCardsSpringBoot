@@ -11,38 +11,37 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
           integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/css/common.css">
 </head>
 
 <body>
 
 <div class="container py-5">
     <div class="form-group">
-        <span class="h2"><a href="/">Home</a></span>
+        <a th:href="@{/}">Home</a>
 
-        <form class="form-signin" method="POST" action="/auth/admin/registration" th:object="${userForm}">
+        <form class="form-group" method="POST" action="/auth/admin/registration" th:object="${userForm}">
 
-            <h2 class="form-signin-heading">Create a new User account</h2>
+            <h2 class="form-group">Create a new account</h2>
 
-            <div class="form-signin col-md-6 my-2">
+            <div class="form-group col-md-6 my-2">
                 <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp"
                        placeholder="Enter email" autofocus="true" required>
                 <p class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
             </div>
 
-            <div class="form-signin col-md-6 my-2" th:classappend="${#fields.hasErrors('*')} ? 'has-error' : ''">
+            <div class="form-group col-md-6 my-2">
                 <input name="password" type="password" class="form-control" placeholder="Password" required/>
                 <p class="alert alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
             </div>
 
-            <div class="form-signin col-md-6 my-2">
+            <div class="form-group col-md-6 my-2">
                 <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                        placeholder="Confirm your password"
                        required>
                 <p class="alert alert-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
             </div>
 
-            <div class="form-signin col-md-2 my-2">
+            <div class="form-group col-md-2 my-2">
                 <input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit">
             </div>
 
@@ -50,6 +49,6 @@
         <span th:text="${error}"/>
     </div>
 </div>
-
+<div th:insert="fragments/footer :: footer">&copy; _2023_</div>
 </body>
 </html>

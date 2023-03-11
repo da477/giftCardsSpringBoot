@@ -1,8 +1,8 @@
-package org.da477.springsecurity.controller;
+package org.da477.giftcards.controller;
 
-import org.da477.springsecurity.model.Card;
-import org.da477.springsecurity.repository.CardRepository;
-import org.da477.springsecurity.service.CardService;
+import org.da477.giftcards.model.Card;
+import org.da477.giftcards.repository.CardRepository;
+import org.da477.giftcards.service.CardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

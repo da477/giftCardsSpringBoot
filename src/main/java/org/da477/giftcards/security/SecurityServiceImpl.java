@@ -1,4 +1,4 @@
-package org.da477.springsecurity.security;
+package org.da477.giftcards.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

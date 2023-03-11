@@ -1,6 +1,6 @@
-package org.da477.springsecurity.service;
+package org.da477.giftcards.service;
 
-import org.da477.springsecurity.model.User;
+import org.da477.giftcards.model.User;
 
 public interface UserService {
 

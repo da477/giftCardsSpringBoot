@@ -1,7 +1,6 @@
-package org.da477.springsecurity.repository;
+package org.da477.giftcards.repository;
 
-import org.da477.springsecurity.model.Card;
-import org.da477.springsecurity.model.User;
+import org.da477.giftcards.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

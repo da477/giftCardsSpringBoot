@@ -1,9 +1,9 @@
-package org.da477.springsecurity.service;
+package org.da477.giftcards.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.da477.springsecurity.model.Card;
-import org.da477.springsecurity.model.Status;
-import org.da477.springsecurity.repository.CardRepository;
+import org.da477.giftcards.model.Card;
+import org.da477.giftcards.model.Status;
+import org.da477.giftcards.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,19 +1,18 @@
-package org.da477.springsecurity.controller;
+package org.da477.giftcards.controller;
 
-import org.da477.springsecurity.model.Card;
-import org.da477.springsecurity.service.CardService;
+import org.da477.giftcards.model.Card;
+import org.da477.giftcards.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.da477.springsecurity.controller.CardRestControllerV1.REST_URL;
+import static org.da477.giftcards.controller.CardRestControllerV1.REST_URL;
 
 @Validated
 @RestController

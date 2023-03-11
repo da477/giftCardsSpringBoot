@@ -1,4 +1,4 @@
-package org.da477.springsecurity;
+package org.da477.giftcards;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

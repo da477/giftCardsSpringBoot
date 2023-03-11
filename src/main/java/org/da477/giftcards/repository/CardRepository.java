@@ -1,11 +1,9 @@
-package org.da477.springsecurity.repository;
+package org.da477.giftcards.repository;
 
-import org.da477.springsecurity.model.Card;
-import org.da477.springsecurity.model.Status;
+import org.da477.giftcards.model.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

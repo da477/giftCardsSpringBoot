@@ -1,9 +1,9 @@
-package org.da477.springsecurity.controller;
+package org.da477.giftcards.controller;
 
-import org.da477.springsecurity.model.User;
-import org.da477.springsecurity.security.SecurityService;
-import org.da477.springsecurity.service.UserService;
-import org.da477.springsecurity.validator.UserValidator;
+import org.da477.giftcards.model.User;
+import org.da477.giftcards.security.SecurityService;
+import org.da477.giftcards.service.UserService;
+import org.da477.giftcards.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 /**
- * Controller for {@link org.da477.springsecurity.model.User}'s pages.
+ * Controller for {@link org.da477.giftcards.model.User}'s pages.
  *
  * @author da
  * @version 1.0

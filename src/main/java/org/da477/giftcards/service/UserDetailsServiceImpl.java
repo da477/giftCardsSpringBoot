@@ -1,8 +1,8 @@
-package org.da477.springsecurity.service;
+package org.da477.giftcards.service;
 
-import org.da477.springsecurity.model.Role;
-import org.da477.springsecurity.model.User;
-import org.da477.springsecurity.repository.UserRepository;
+import org.da477.giftcards.model.Role;
+import org.da477.giftcards.model.User;
+import org.da477.giftcards.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

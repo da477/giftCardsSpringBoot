@@ -1,9 +1,9 @@
-package org.da477.springsecurity;
+package org.da477.giftcards;
 
-import org.da477.springsecurity.controller.CardRestControllerV1;
-import org.da477.springsecurity.model.Card;
-import org.da477.springsecurity.model.Status;
-import org.da477.springsecurity.model.TypeCard;
+import org.da477.giftcards.controller.CardRestControllerV1;
+import org.da477.giftcards.model.Card;
+import org.da477.giftcards.model.Status;
+import org.da477.giftcards.model.TypeCard;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;

@@ -12,7 +12,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.da477.springsecurity" level="info"/>
+    <logger name="org.da477.giftcards" level="info"/>
     <logger name="org.springframework" level="info"/>
 
     <root level="error">

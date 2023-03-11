@@ -1,7 +1,7 @@
-package org.da477.springsecurity.validator;
+package org.da477.giftcards.validator;
 
-import org.da477.springsecurity.model.User;
-import org.da477.springsecurity.service.UserService;
+import org.da477.giftcards.model.User;
+import org.da477.giftcards.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -9,7 +9,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 /**
- * Validator for {@link org.da477.springsecurity.model.User} class,
+ * Validator for {@link org.da477.giftcards.model.User} class,
  * implements {@link Validator} interface.
  *
  * @author da

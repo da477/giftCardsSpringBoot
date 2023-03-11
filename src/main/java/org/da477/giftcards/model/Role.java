@@ -1,4 +1,4 @@
-package org.da477.springsecurity.model;
+package org.da477.giftcards.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;

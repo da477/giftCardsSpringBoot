@@ -1,4 +1,4 @@
-package org.da477.springsecurity.security;
+package org.da477.giftcards.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

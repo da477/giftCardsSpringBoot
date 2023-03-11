@@ -1,17 +1,17 @@
-package org.da477.springsecurity.service;
+package org.da477.giftcards.service;
 
-import org.da477.springsecurity.model.Role;
-import org.da477.springsecurity.model.Status;
-import org.da477.springsecurity.model.User;
-import org.da477.springsecurity.repository.RoleDao;
-import org.da477.springsecurity.repository.UserRepository;
+import org.da477.giftcards.model.Role;
+import org.da477.giftcards.model.Status;
+import org.da477.giftcards.model.User;
+import org.da477.giftcards.repository.RoleDao;
+import org.da477.giftcards.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.da477.springsecurity.security.SecurityConfig.PASSWORD_ENCODER;
+import static org.da477.giftcards.security.SecurityConfig.PASSWORD_ENCODER;
 
 @Service
 public class UserServiceImpl implements UserService {

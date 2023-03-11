@@ -1,10 +1,9 @@
-package org.da477.springsecurity.model;
+package org.da477.giftcards.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 

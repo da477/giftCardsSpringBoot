@@ -28,9 +28,9 @@ public class CardUIController {
     private final CardService cardService;
 
     @Autowired
-    public CardUIController(CardService cardService, CardRepository repository, CardService cardService1) {
+    public CardUIController(CardService cardService, CardRepository repository) {
         this.repository = repository;
-        this.cardService = cardService1;
+        this.cardService = cardService;
     }
 
     @GetMapping("signup")
@@ -68,7 +68,7 @@ public class CardUIController {
             return "add-card";
         }
 
-        cardService.add(card);
+        cardService.save(card);
 
         return "redirect:/cards/";
     }
@@ -95,7 +95,7 @@ public class CardUIController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid card number:" + number));
 
         cardFromDB.setTypeCard(card.getTypeCard());
-        cardService.update(cardFromDB);
+        cardService.save(cardFromDB);
         model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));
         return "cards";
     }

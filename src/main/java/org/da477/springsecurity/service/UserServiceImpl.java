@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.da477.springsecurity.config.SecurityConfig.PASSWORD_ENCODER;
+import static org.da477.springsecurity.security.SecurityConfig.PASSWORD_ENCODER;
 
 @Service
 public class UserServiceImpl implements UserService {

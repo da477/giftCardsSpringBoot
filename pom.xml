@@ -10,16 +10,16 @@
 	</parent>
 
 	<groupId>org.da477</groupId>
-	<artifactId>springsecurity</artifactId>
+	<artifactId>gifrcards</artifactId>
 <!--	<packaging>war</packaging>-->
 	<version>1.0-SNAPSHOT</version>
-	<name>SpringSecurity</name>
-	<description>Project for Spring Boot</description>
+	<name>GiftCards</name>
+	<description>Gift cards</description>
 
 	<properties>
 		<java.version>11</java.version>
 		<postgresql.version>42.5.0</postgresql.version>
-		<jjwt.version>0.9.1</jjwt.version>
+<!--		<jjwt.version>0.9.1</jjwt.version>-->
 	</properties>
 
 	<dependencies>
@@ -43,9 +43,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-devtools</artifactId>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
 
 		<!-- TEST -->
 		<dependency>
@@ -59,17 +63,23 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.security</groupId>-->
-		<!--			<artifactId>spring-security-test</artifactId>-->
-		<!--			<scope>test</scope>-->
-		<!--		</dependency>-->
-
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>2.0.1.Final</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.jayway.jsonpath</groupId>-->
+<!--			<artifactId>json-path</artifactId>-->
+<!--			<version>2.4.0</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
+
+<!--		<dependency>-->
+<!--			<groupId>javax.validation</groupId>-->
+<!--			<artifactId>validation-api</artifactId>-->
+<!--			<version>2.0.1.Final</version>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -90,13 +100,18 @@
 			<scope>runtime</scope>
 			<version>${postgresql.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- WEB -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>javax.servlet</groupId>-->
+<!--			<artifactId>jstl</artifactId>-->
+<!--			<version>1.2</version>-->
+<!--		</dependency>-->
 <!--		<dependency>-->
 <!--			<groupId>org.thymeleaf.extras</groupId>-->
 <!--			<artifactId>thymeleaf-extras-springsecurity5</artifactId>-->
@@ -104,11 +119,11 @@
 <!--		</dependency>-->
 
 		<!-- Apache Commons DBCP -->
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>commons-dbcp</groupId>-->
+<!--			<artifactId>commons-dbcp</artifactId>-->
+<!--			<version>1.4</version>-->
+<!--		</dependency>-->
 
 	</dependencies>
 

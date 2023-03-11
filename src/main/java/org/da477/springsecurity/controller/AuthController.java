@@ -1,7 +1,7 @@
 package org.da477.springsecurity.controller;
 
 import org.da477.springsecurity.model.User;
-import org.da477.springsecurity.service.SecurityService;
+import org.da477.springsecurity.security.SecurityService;
 import org.da477.springsecurity.service.UserService;
 import org.da477.springsecurity.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -25,14 +24,18 @@ import java.util.Date;
 @Controller
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
-    @Autowired
-    private UserValidator userValidator;
+    private final UserValidator userValidator;
+
+    @Autowired(required = true)
+    public AuthController(UserService userService, SecurityService securityService, UserValidator userValidator) {
+        this.userService = userService;
+        this.securityService = securityService;
+        this.userValidator = userValidator;
+    }
 
     @GetMapping("/")
     public String index(Model model) {

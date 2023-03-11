@@ -8,12 +8,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for {@link Card} class.
+ *
+ * @author da
+ * @version 1.0
+ */
 @Transactional(readOnly = true)
-public interface CardRepository extends JpaRepository<Card, Integer> {
+public interface CardRepository extends JpaRepository<Card, Long> {
 
     Optional<Card> findByNumber(Long number);
 
-    List<Card> findAllByStatus(Status status);
-
     Card findFirstByOrderByNumberDesc();
+
+    void deleteByNumber(Long number);
+
 }

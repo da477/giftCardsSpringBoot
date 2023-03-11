@@ -1,5 +1,6 @@
 package org.da477.springsecurity.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.da477.springsecurity.model.Card;
 import org.da477.springsecurity.model.Status;
 import org.da477.springsecurity.repository.CardRepository;
@@ -10,7 +11,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Service interface for {@link Card} class.
+ *
+ * @author da
+ * @version 1.0
+ */
 @Service
+@Slf4j
 public class CardService {
 
     private final CardRepository repository;
@@ -20,15 +28,13 @@ public class CardService {
         this.repository = repository;
     }
 
-    public List<Card> findAll() {
+    public List<Card> getAll() {
+        log.info("IN CardService getAll");
         return repository.findAll();
     }
 
-    public List<Card> findAllByStatus(Status status) {
-        return repository.findAllByStatus(status);
-    }
-
-    public Card getById(int id) {
+    public Card getById(Long id) {
+        log.info("IN CardService getById {}", id);
         return repository.findById(id).orElse(null);
     }
 
@@ -36,16 +42,39 @@ public class CardService {
         return repository.findByNumber(number).orElse(null);
     }
 
-    public Card create(Card card) {
-        if (card.isNew()) {
-            add(card);
+    public Card getLastOne() {
+        log.info("IN CardService getLastOne");
+        return repository.findFirstByOrderByNumberDesc();
+    }
+
+    public Card save(Card card) {
+        log.info("IN CardService save {}", card);
+        if (card.isNew() && getByNumber(card.getNumber()) == null) {
+            addNewCard(card);
         } else {
-            update(card);
+            updateCard(card);
         }
         return card;
     }
 
-    public void add(Card card) {
+    private void updateCard(Card card) {
+        Card fromDB = getByNumber(card.getNumber());
+        card.setId(fromDB.getId());
+        card.setTypeCard(fromDB.getTypeCard());
+        card.setGenerated(fromDB.isGenerated());
+        card.setRegistered(fromDB.getRegistered());
+
+        card.setStatus(fromDB.getStatus() == Status.NEW || fromDB.getStatus() == Status.ACTIVE ? Status.ACTIVE : fromDB.getStatus());
+        card.setAmount(fromDB.getAmount());
+        card.setPrint(fromDB.isPrint() == true ? true : card.isPrint());
+        card.setLastUpdate(new Date());
+        card.setWithdrawal(card.getWithdrawal() != null && card.getWithdrawal() > fromDB.getWithdrawal() ? card.getWithdrawal() : fromDB.getWithdrawal());
+        card.setOwner_id(fromDB.getOwner_id() == null ? card.getOwner_id() : fromDB.getOwner_id());
+
+        repository.save(card);
+    }
+
+    private void addNewCard(Card card) {
 
         card.setTypeCard(card.getTypeCard());
         card.setGenerated(true);
@@ -53,6 +82,20 @@ public class CardService {
         card.setAmount(card.getAmount());
         card.setWithdrawal(0.0F);
         card.setStatus(Status.NEW);
+        card.setPrint(false);
+
+        Long newNumber = generateNewNumber();
+
+        if (newNumber.equals(null) || newNumber.equals(0L)) {
+            // do nothing
+        } else {
+            card.setNumber(newNumber);
+            repository.save(card);
+        }
+
+    }
+
+    public Long generateNewNumber() {
 
         Long newNumber = null;
 
@@ -64,30 +107,14 @@ public class CardService {
                 break;
             }
         }
-
-        if (newNumber.equals(null) || newNumber.equals(0L)) {
-            // do nothing
-        } else {
-            card.setNumber(newNumber);
-            repository.save(card);
-        }
-
+        return newNumber;
     }
 
-    public void update(Card card) {
-        if (getById(card.getId()) != null) {
-            card.setLastUpdate(new Date());
-            repository.save(card);
-        }
-    }
 
-    public Card findLastOne() {
-        return repository.findFirstByOrderByNumberDesc();
+    public void delete(Long number) {
+        log.info("IN CardService delete {}", number);
+        repository.deleteByNumber(number);
+        repository.flush();
     }
-
-    public void delete() {
-        throw new UnsupportedOperationException();
-    }
-
 
 }

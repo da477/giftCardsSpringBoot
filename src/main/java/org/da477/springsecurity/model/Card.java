@@ -13,15 +13,10 @@ import java.util.Objects;
 @Setter
 @ToString
 @Table(name = "giftcards")
-public class Card {
-
-    @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Card extends AbstractBaseEntity {
 
     @Column(name = "number", nullable = false, unique = true)
-    private long number;
+    private Long number;
 
     @Column(name = "amount")
     private Float amount;
@@ -44,10 +39,6 @@ public class Card {
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date registered = new Date();
-
     @Column(name = "lastupdate", nullable = false, columnDefinition = "timestamp default now()")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate = new Date();
@@ -63,11 +54,11 @@ public class Card {
     }
 
     public Float getRest() {
-        return getAmount() -  getWithdrawal();
+        return getAmount() - getWithdrawal();
     }
 
     public boolean isNew() {
-        return this.id == null || this.id == 0;
+        return this.getId() == null || this.getId() == 0;
     }
 
     @Override
@@ -75,14 +66,13 @@ public class Card {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Card card = (Card) o;
-        return id != null && Objects.equals(id, card.id);
+        return this.getId() != null && Objects.equals(this.getId(), card.getId());
     }
 
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
-
 
 
 }

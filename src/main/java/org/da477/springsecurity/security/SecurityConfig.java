@@ -1,4 +1,4 @@
-package org.da477.springsecurity.config;
+package org.da477.springsecurity.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,11 +19,15 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailService;
+    private final UserDetailsService userDetailService;
 
     //https://bcrypt-generator.com/
     public static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(11);
+
+    @Autowired(required = true)
+    public SecurityConfig(UserDetailsService userDetailService) {
+        this.userDetailService = userDetailService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
 
+                .antMatchers("/api/v1/cards/**").hasRole("ADMIN")
                 .antMatchers("/").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/auth/admin/**").hasRole("ADMIN")
                 .antMatchers("/cards/**").hasRole("ADMIN")

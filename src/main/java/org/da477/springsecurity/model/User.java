@@ -14,11 +14,7 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class User extends AbstractBaseEntity {
 
     @Column(name = "email")
     private String email;
@@ -42,10 +38,6 @@ public class User {
     @ToString.Exclude
     private Set<Role> roles;
 
-    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date registered = new Date();
-
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
     private Status status;
@@ -55,7 +47,7 @@ public class User {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         User user = (User) o;
-        return id != null && Objects.equals(id, user.id);
+        return this.getId() != null && Objects.equals(this.getId(), user.getId());
     }
 
     @Override

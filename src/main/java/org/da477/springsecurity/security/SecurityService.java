@@ -1,4 +1,4 @@
-package org.da477.springsecurity.service;
+package org.da477.springsecurity.security;
 
 /**
  * Service for Security.

@@ -7,11 +7,12 @@
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %class{50}.%M:%L - %msg%n</pattern>
+<!--            <pattern>%d{HH:mm:ss.SSS} %-5level %class{50}.%M:%L - %msg%n</pattern>-->
+            <pattern>%magenta(%msg%n)</pattern>
         </encoder>
     </appender>
 
-    <logger name="org.da477.springsecurity" level="debug"/>
+    <logger name="org.da477.springsecurity" level="info"/>
     <logger name="org.springframework" level="info"/>
 
     <root level="error">

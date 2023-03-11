@@ -1,4 +1,4 @@
-package org.da477.springsecurity.service;
+package org.da477.springsecurity.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

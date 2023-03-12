@@ -1,11 +1,6 @@
 package org.da477.giftcards;
 
 import org.da477.giftcards.controller.CardRestControllerV1;
-import org.da477.giftcards.model.Card;
-import org.da477.giftcards.model.Status;
-import org.da477.giftcards.model.TypeCard;
-import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +13,10 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -107,35 +97,6 @@ class GiftCardApplicationTests {
 
         assertEquals(200, result.getResponse().getStatus());
 
-    }
-
-    @Ignore
-    public void testGetExample() throws Exception {
-
-        Long CARD1_ID = 123456789L;
-
-        List<Card> cards = new ArrayList<>();
-        Card card = new Card();
-
-        card.setNumber(CARD1_ID);
-        card.setGenerated(true);
-
-        card.setTypeCard(TypeCard.SIMPLE);
-        card.setOwner_id("215");
-        card.setAmount(100F);
-        card.setWithdrawal(0.0F);
-        card.setStatus(Status.NEW);
-        card.setPrint(false);
-
-//        Mockito.when(cardService.getAll()).thenReturn(cards);
-        mockMvc
-                .perform(get(REST_URL)
-                        .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
-                        .with(csrf()))
-//                .andExpect(status().is3xxRedirection());
-                .andExpect(status().isOk())
-                .andExpect((ResultMatcher) jsonPath("$[0].number", Matchers.equalTo(CARD1_ID)))
-                .andExpect((ResultMatcher) jsonPath("$[0].amount", Matchers.equalTo(100F)));
     }
 
 }

@@ -14,6 +14,7 @@
 
     <logger name="org.da477.giftcards" level="info"/>
     <logger name="org.springframework" level="info"/>
+    <logger name="org.springframework.security" level="debug"/>
 
     <root level="error">
         <appender-ref ref="console"/>

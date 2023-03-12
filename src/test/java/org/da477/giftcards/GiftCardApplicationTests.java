@@ -1,6 +1,9 @@
 package org.da477.giftcards;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.da477.giftcards.controller.CardRestControllerV1;
+import org.da477.giftcards.model.Card;
+import org.da477.giftcards.service.CardService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -31,6 +34,13 @@ class GiftCardApplicationTests {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private MockMvc mockMvc;
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private CardService cardService;
 
     @Test
     void contextLoads() throws Exception {
@@ -56,7 +66,9 @@ class GiftCardApplicationTests {
     public void shouldLoginPageForAnonymousUser() throws Exception {
         MvcResult result = mockMvc.perform(
                         get("/cards/"))
-                .andExpect(status().is3xxRedirection()).andReturn();
+                .andExpect(status().is3xxRedirection())
+                .andDo(print())
+                .andReturn();
 
         assertEquals("http://localhost/auth/login", result.getResponse().getRedirectedUrl());
 
@@ -75,14 +87,61 @@ class GiftCardApplicationTests {
     }
 
     @Test
-    public void getLastOne() throws Exception {
+    public void getLastOne_OverRest() throws Exception {
+
+        Card card = cardService.getLastOne();
+        System.out.println(card.getNumber());
+
         mockMvc.perform(get(REST_URL + "lastOne")
                         .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.number").value(card.getNumber()));
+
+    }
+
+    @WithMockUser
+    @Test
+    public void givenNumber_whenGetNotExistingCard_thenStatus404() throws Exception {
+
+        mockMvc.perform(get(REST_URL + "1")
+                        .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
+                        .with(csrf())
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenCard_whenGetCard_thenStatus200() throws Exception {
+        Card card = cardService.getLastOne();
+        mockMvc.perform(
+                        get(REST_URL + "{id}", card.getNumber())
+                                .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
+                                .with(csrf())
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().json(objectMapper.writeValueAsString(card)));
+    }
+
+    @Test
+    public void giveCard_whenUpdate_thenStatus200andUpdatedReturns() throws Exception {
+        Card card = cardService.getLastOne();
+        Float curWithdrawal = card.getWithdrawal();
+        card.setWithdrawal(curWithdrawal+1); //do not save this here
+
+        mockMvc.perform(
+                        post(REST_URL, card)
+                                .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
+                                .with(csrf())
+                                .content(objectMapper.writeValueAsString(card))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.withdrawal").value(curWithdrawal+1))
+                .andExpect(jsonPath("$.number").value(card.getNumber()));
     }
 
     @Test

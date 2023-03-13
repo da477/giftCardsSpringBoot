@@ -1,5 +1,9 @@
 package org.da477.giftcards.controller;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.da477.giftcards.model.Card;
 import org.da477.giftcards.repository.CardRepository;
 import org.da477.giftcards.service.CardService;
@@ -9,12 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Controller
 @RequestMapping("/cards/")
@@ -82,6 +95,51 @@ public class CardUIController {
         repository.delete(card);
         model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));
         return "cards";
+    }
+
+    @GetMapping("print/{number}")
+    public ResponseEntity<?> printCard(@PathVariable("number") long number, Model model) throws IOException {
+        log.info("printCard {}", number);
+
+        Card card = repository.findByNumber(number)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid card number:" + number));
+
+        if (card == null) {
+            return new ResponseEntity<>("numberNotFound:" + number, HttpStatus.OK);
+        } else if (card.isPrint()) {
+            return new ResponseEntity<>("Card has Already Printed:" + number, HttpStatus.OK);
+        } else {
+
+            card.setPrint(true);
+            model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));
+
+            File tmpFile = File.createTempFile(String.valueOf(number), "pdf");
+            try {
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(tmpFile));
+                document.open();
+
+                Paragraph paragraph = new Paragraph("Gift Card № " + number);
+                document.add(paragraph);
+                document.close();
+
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+
+            byte[] pdfContent = Files.readAllBytes(Path.of(tmpFile.toURI()));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            String filename = "card" + number + ".pdf"; // Here you have to set the actual filename of your pdf
+            headers.setContentDispositionFormData(filename, filename);
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+            ResponseEntity<byte[]> response = new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
+
+            cardService.save(card);
+            tmpFile.delete();
+            return response;
+        }
     }
 
     @PostMapping("update/{number}")

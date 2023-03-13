@@ -44,7 +44,7 @@ public class CardRestControllerV1 {
     }
 
     @GetMapping("/{number}")
-    public ResponseEntity<Card> getCardByNumber(@PathVariable("number") Long number) {
+    public ResponseEntity<?> getCardByNumber(@PathVariable("number") Long number) {
         if (number == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -52,9 +52,7 @@ public class CardRestControllerV1 {
         Card card = cardService.getByNumber(number);
 
         if (card == null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("numberNotFound", String.valueOf(number));
-            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("numberNotFound=" + number, HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(card, HttpStatus.OK);
@@ -62,7 +60,7 @@ public class CardRestControllerV1 {
     }
 
     @PostMapping
-    public ResponseEntity<Card> saveCard(@RequestBody @Validated Card card) {
+    public ResponseEntity<?> saveCard(@RequestBody @Validated Card card) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -71,8 +69,7 @@ public class CardRestControllerV1 {
         }
 
         if (card.getOwner_id() == null || card.getOwner_id().equals("")) {
-            headers.add("owner_id_Mandatory", card.getOwner_id());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("owner_id_Mandatory=" +  card.getOwner_id(), HttpStatus.BAD_REQUEST);
         }
 
         cardService.save(card);
@@ -92,6 +89,5 @@ public class CardRestControllerV1 {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
-
 
 }

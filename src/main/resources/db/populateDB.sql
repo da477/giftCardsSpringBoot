@@ -1,19 +1,23 @@
 DELETE FROM users;
--- https://bcrypt-generator.com from admin
-INSERT INTO users (id, email, name, surname, password, role, status)
-VALUES (1, 'admin@admin.com', 'admin', 'Adminov', '$2a$11$lYujt9mtAVoQI4YJ0QPCmOAD8PalSt2b9hiUyoz5otsp61/vat7TO', 'ADMIN',
+-- https://bcrypt-generator.com password "admin" and encrypt 11
+INSERT INTO users (id, email, name, surname, password, status)
+VALUES (1, 'admin@admin.com', 'admin', 'Adminov', '$2a$11$lYujt9mtAVoQI4YJ0QPCmOAD8PalSt2b9hiUyoz5otsp61/vat7TO',
         'ACTIVE'),
-       (2, 'user@user.com', 'user', 'Userov', '$2a$11$lYujt9mtAVoQI4YJ0QPCmOAD8PalSt2b9hiUyoz5otsp61/vat7TO', 'USER',
+       (2, 'user@user.com', 'user', 'Userov', '$2a$11$lYujt9mtAVoQI4YJ0QPCmOAD8PalSt2b9hiUyoz5otsp61/vat7TO',
         'ACTIVE'),
-       (3, 'user2@user.com', 'user2', 'Userov', '$2a$11$lYujt9mtAVoQI4YJ0QPCmOAD8PalSt2b9hiUyoz5otsp61/vat7TO', 'USER',
-        'BANNED');
+       (3, 'user2@user.com', 'user2', 'Userov', '$2a$11$lYujt9mtAVoQI4YJ0QPCmOAD8PalSt2b9hiUyoz5otsp61/vat7TO',
+        'BANNED'),
+       (4, 'user3@user.com', 'user3', 'Userov', '{noop}admin', 'ACTIVE');
 
 delete from roles;
 insert into roles values (1, 'ROLE_USER');
 insert into roles values (2, 'ROLE_ADMIN');
 
 delete from user_roles;
-insert into user_roles values (1, 2);
+insert into user_roles values (1, 1); --for admin role User
+insert into user_roles values (1, 2); --for admin role Admin
+insert into user_roles values (2, 1); --for user role User
+insert into user_roles values (3, 1); --for user2 role User
 
 DELETE FROM giftcards;
 insert into giftcards (number, amount, isprint, status, isGenerated, typeCard, owner_id, withdrawal)

@@ -1,12 +1,9 @@
 package org.da477.giftcards.controller;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 import org.da477.giftcards.model.Card;
 import org.da477.giftcards.repository.CardRepository;
 import org.da477.giftcards.service.CardService;
+import org.da477.giftcards.utils.AppUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Controller
 @RequestMapping("/cards/")
@@ -89,10 +82,11 @@ public class CardUIController {
     @GetMapping("delete/{number}")
     public String deleteCard(@PathVariable("number") long number, Model model) {
         log.info("deleteCard {}", number);
-        Card card = repository.findByNumber(number)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid card number:" + number));
+        Card card = cardService.getByNumber(number);
 
-        repository.delete(card);
+        if (card != null)
+            repository.delete(card);
+
         model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));
         return "cards";
     }
@@ -101,43 +95,27 @@ public class CardUIController {
     public ResponseEntity<?> printCard(@PathVariable("number") long number, Model model) throws IOException {
         log.info("printCard {}", number);
 
-        Card card = repository.findByNumber(number)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid card number:" + number));
+        Card cardFromDb = cardService.getByNumber(number);
 
-        if (card == null) {
-            return new ResponseEntity<>("numberNotFound:" + number, HttpStatus.OK);
-        } else if (card.isPrint()) {
-            return new ResponseEntity<>("Card has Already Printed:" + number, HttpStatus.OK);
+        if (cardFromDb == null) {
+            return new ResponseEntity<>("Number is not found: " + number, HttpStatus.OK);
+        } else if (cardFromDb.isPrint()) {
+            return new ResponseEntity<>("Card is already printed: " + number, HttpStatus.OK);
         } else {
 
-            card.setPrint(true);
             model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));
-
-            File tmpFile = File.createTempFile(String.valueOf(number), "pdf");
-            try {
-                Document document = new Document();
-                PdfWriter.getInstance(document, new FileOutputStream(tmpFile));
-                document.open();
-
-                Paragraph paragraph = new Paragraph("Gift Card № " + number);
-                document.add(paragraph);
-                document.close();
-
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            }
-
-            byte[] pdfContent = Files.readAllBytes(Path.of(tmpFile.toURI()));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            String filename = "card" + number + ".pdf"; // Here you have to set the actual filename of your pdf
+            String filename = "card" + number + ".pdf";
             headers.setContentDispositionFormData(filename, filename);
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-            ResponseEntity<byte[]> response = new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
 
-            cardService.save(card);
-            tmpFile.delete();
+            ResponseEntity<byte[]> response = new ResponseEntity<>(AppUtil.getPdfContent(number),
+                    headers, HttpStatus.OK);
+
+            cardFromDb.setPrint(true);
+            cardService.save(cardFromDb);
             return response;
         }
     }
@@ -152,6 +130,7 @@ public class CardUIController {
         Card cardFromDB = repository.findByNumber(number)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid card number:" + number));
 
+//        cardFromDB.setPrint(card.isPrint());
         cardFromDB.setTypeCard(card.getTypeCard());
         cardService.save(cardFromDB);
         model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));

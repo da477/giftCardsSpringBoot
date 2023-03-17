@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.da477.giftcards.controller.CardRestControllerV1;
 import org.da477.giftcards.model.Card;
 import org.da477.giftcards.service.CardService;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -61,20 +63,24 @@ class GiftCardApplicationTests {
                         .with(csrf()));
     }
 
-    @WithAnonymousUser
+    @Ignore //not ready
+    public void loginPage() throws Exception {
+        mockMvc.perform(formLogin("/auth/login").user("user").password("admin"))
+                .andExpect(redirectedUrl("/auth/login?error"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection());
+    }
+
     @Test
+    @WithAnonymousUser
     public void shouldLoginPageForAnonymousUser() throws Exception {
-        MvcResult result = mockMvc.perform(
+                mockMvc.perform(
                         get("/cards/"))
                 .andExpect(status().is3xxRedirection())
                 .andDo(print())
-                .andReturn();
-
-        assertEquals("http://localhost/auth/login", result.getResponse().getRedirectedUrl());
-
+                .andExpect(redirectedUrl("http://localhost/auth/login"));
     }
 
-    @WithMockUser("admin@admin.com")
     @Test
     public void shouldAllowGetAllWhenUserIsAdmin() throws Exception {
         this.mockMvc.perform(get(REST_URL)
@@ -86,15 +92,24 @@ class GiftCardApplicationTests {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
+    @Ignore
+    @WithMockUser
+    public void getForbiddenForUser() throws Exception {
+        mockMvc.perform(get(REST_URL + "lastOne"))
+                .andExpect(status().isForbidden());
+    }
+
     @Test
-    public void getLastOne_OverRest() throws Exception {
+    @WithMockUser(username="admin",roles={"USER","ADMIN"})
+    public void getLastOne_OverRestWhenUserIsAdmin() throws Exception {
 
         Card card = cardService.getLastOne();
         System.out.println(card.getNumber());
 
         mockMvc.perform(get(REST_URL + "lastOne")
-                        .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
-                        .with(csrf()))
+//                        .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
+//                        .with(csrf())
+                )
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content()
@@ -103,7 +118,6 @@ class GiftCardApplicationTests {
 
     }
 
-    @WithMockUser
     @Test
     public void givenNumber_whenGetNotExistingCard_thenStatus404() throws Exception {
 
@@ -120,10 +134,12 @@ class GiftCardApplicationTests {
         mockMvc.perform(
                         get(REST_URL + "{id}", card.getNumber())
                                 .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
-                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(print())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(card)));
     }
 
@@ -152,7 +168,10 @@ class GiftCardApplicationTests {
                                 .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
                                 .with(csrf())
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn();
 
         assertEquals(200, result.getResponse().getStatus());
 

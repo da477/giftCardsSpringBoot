@@ -1,17 +1,24 @@
 package org.da477.giftcards.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.da477.giftcards.model.User;
 import org.da477.giftcards.security.SecurityService;
 import org.da477.giftcards.service.UserService;
 import org.da477.giftcards.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -93,6 +100,11 @@ public class AuthController {
         model.addAttribute("userName", userName);
         model.addAttribute("user", user);
 
+    }
+
+    @GetMapping("/403")
+    public String error403() {
+        return "error/403";
     }
 
 }

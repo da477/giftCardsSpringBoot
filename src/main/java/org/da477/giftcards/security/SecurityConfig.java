@@ -12,12 +12,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
 
     private final UserDetailsService userDetailService;
 
@@ -36,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 .antMatchers("/api/v1/cards/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/auth/admin/**").hasRole("ADMIN")
                 .antMatchers("/cards/**").hasRole("ADMIN")
 
@@ -60,7 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/auth/login?logout");
+                .logoutSuccessUrl("/auth/login?logout")
+                .and()
+                // custom 403 access denied handler
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+        ;
     }
 
     @Bean

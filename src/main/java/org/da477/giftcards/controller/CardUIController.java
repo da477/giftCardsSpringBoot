@@ -74,7 +74,7 @@ public class CardUIController {
             return "add-card";
         }
 
-        cardService.save(card);
+        cardService.createOrUpdate(card);
 
         return "redirect:/cards/";
     }
@@ -115,7 +115,7 @@ public class CardUIController {
                     headers, HttpStatus.OK);
 
             cardFromDb.setPrint(true);
-            cardService.save(cardFromDb);
+            cardService.createOrUpdate(cardFromDb);
             return response;
         }
     }
@@ -132,7 +132,7 @@ public class CardUIController {
 
 //        cardFromDB.setPrint(card.isPrint());
         cardFromDB.setTypeCard(card.getTypeCard());
-        cardService.save(cardFromDB);
+        cardService.createOrUpdate(cardFromDB);
         model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));
         return "cards";
     }

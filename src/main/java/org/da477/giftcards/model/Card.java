@@ -1,5 +1,6 @@
 package org.da477.giftcards.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -41,6 +42,9 @@ public class Card extends AbstractBaseEntity {
 
     @Column(name = "lastupdate", nullable = false, columnDefinition = "timestamp default now()")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "MM/dd/yyyy hh:mm:ss")
     private Date lastUpdate = new Date();
 
     @Column(name = "owner_id")

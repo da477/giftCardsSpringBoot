@@ -72,7 +72,7 @@ public class CardRestControllerV1 {
             return new ResponseEntity<>("owner_id_Mandatory=" +  card.getOwner_id(), HttpStatus.BAD_REQUEST);
         }
 
-        cardService.save(card);
+        cardService.createOrUpdate(card);
         return new ResponseEntity<>(card, headers, HttpStatus.OK);
     }
 

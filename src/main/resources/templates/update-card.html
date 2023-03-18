@@ -81,7 +81,7 @@
                         <p class="my-2"
                            th:text="${'Registered: '
                            + #dates.format(card.getRegistered(), 'dd/MM/yy HH:mm:ss') +
-                           ' Update: ' + #dates.format(card.getLastUpdate(), 'dd/MM/yy HH:mm:ss')}"
+                           ' | Update: ' + #dates.format(card.getLastUpdate(), 'dd/MM/yy HH:mm:ss')}"
                         >VALUE</p>
                     </div>
                 </div>

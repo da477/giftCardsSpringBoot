@@ -11,10 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.da477.giftcards.controller.CardRestControllerV1.REST_URL;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,14 +39,14 @@ class CardRestControllerV1Test {
     @Test
     public void greetingShouldReturnMessageFromService() throws Exception {
 
-        Long number = service.getLastOne().getNumber();
-
-        this.mockMvc.perform(get(REST_URL + "/lastOne"))
+        MvcResult result = this.mockMvc.perform(get(REST_URL + "/lastOne"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.number").value(service.getLastOne().getNumber()));
+                .andExpect(jsonPath("$.number").value(service.getLastOne().getNumber()))
+                .andReturn();
+        assertThat(result.getResponse().getContentAsString(), containsString("\"id\":"));
     }
 
     @Ignore

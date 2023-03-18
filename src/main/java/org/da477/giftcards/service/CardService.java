@@ -47,8 +47,8 @@ public class CardService {
         return repository.findFirstByOrderByNumberDesc();
     }
 
-    public Card save(Card card) {
-        log.info("IN CardService save {}", card);
+    public Card createOrUpdate(Card card) {
+        log.info("IN CardService createOrUpdate {}", card);
         if (card.isNew() && getByNumber(card.getNumber()) == null) {
             addNewCard(card);
         } else {

@@ -147,7 +147,7 @@ class GiftCardApplicationTests {
     public void giveCard_whenUpdate_thenStatus200andUpdatedReturns() throws Exception {
         Card card = cardService.getLastOne();
         Float curWithdrawal = card.getWithdrawal();
-        card.setWithdrawal(curWithdrawal+1); //do not save this here
+        card.setWithdrawal(curWithdrawal+1); //do not createOrUpdate this here
 
         mockMvc.perform(
                         post(REST_URL, card)

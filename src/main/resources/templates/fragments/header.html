@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
@@ -25,24 +25,23 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded mt-0 py-0">
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav navbar-left">
+
+            <ul class="navbar-nav mr-auto">
+
                 <li class="nav-item active">
                     <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
                 </li>
 
             </ul>
 
-            <ul class="nav navbar-nav navbar-right">
-                <li sec:authorize="isAuthenticated()">
-                    <form id="logoutForm" method="POST" action="/auth/logout">
-                        <!--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
-                        <button class="btn btn-primary my-2 my-sm-0" type="submit">Logout </span>
-                        </button>
-                    </form>
-                </li>
-            </ul>
+            <form class="d-flex ms-auto order-5" id="logoutForm" method="POST" action="/auth/logout" sec:authorize="isAuthenticated()">
+                <!--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
+                <div class="col-auto pl-0 pr-0">
+                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Logout</button>
+                </div>
+            </form>
 
-            <form class="form-inline my-2 my-lg-0" method="POST" action="/auth/login" th:if="${userName == ''}">
+            <form class="form-inline my-2 my-lg-0" method="POST" action="/auth/login" sec:authorize="!isAuthenticated()">
                 <div class="col-auto pl-0">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -62,12 +61,12 @@
                     </div>
                 </div>
                 <div class="col-auto pl-0 pr-0">
-                    <button class="btn btn-primary my-2 my-sm-0" type="submit" href="/auth/login">Login</button>
+                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Login</button>
                 </div>
             </form>
         </div>
+
     </nav>
 
 </div>
-
 

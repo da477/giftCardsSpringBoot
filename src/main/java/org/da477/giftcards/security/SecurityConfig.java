@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/auth/login?logout")
+                .logoutSuccessUrl("/")
                 .and()
                 // custom 403 access denied handler
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);

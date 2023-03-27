@@ -105,6 +105,7 @@ public class CardUIController {
 
             model.addAttribute("cards", repository.findAll(DEFAULT_pageAndSortedById));
 
+            //TODO take away to new class --- Util with pdf
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
             String filename = "card" + number + ".pdf";

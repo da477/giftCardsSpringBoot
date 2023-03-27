@@ -41,7 +41,7 @@
                 </div>
             </form>
 
-            <form class="form-inline my-2 my-lg-0" method="POST" action="/auth/login" sec:authorize="!isAuthenticated()">
+            <form class="form-inline my-2 my-lg-0" method="POST" action="/auth/login" sec:authorize="isAnonymous()">
                 <div class="col-auto pl-0">
                     <div class="input-group">
                         <div class="input-group-prepend">

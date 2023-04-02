@@ -1,6 +1,7 @@
 package org.da477.giftcards.controller;
 
 import org.da477.giftcards.model.Card;
+import org.da477.giftcards.model.ErrorMessage;
 import org.da477.giftcards.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -44,19 +45,8 @@ public class CardRestControllerV1 {
     }
 
     @GetMapping("/{number}")
-    public ResponseEntity<?> getCardByNumber(@PathVariable("number") Long number) {
-        if (number == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Card card = cardService.getByNumber(number);
-
-        if (card == null) {
-            return new ResponseEntity<>("numberNotFound=" + number, HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(card, HttpStatus.OK);
-
+    public ResponseEntity<Card> getCardByNumber(@PathVariable("number") Long number) {
+        return ResponseEntity.ok(cardService.getByNumber(number));
     }
 
     @PostMapping
@@ -81,13 +71,16 @@ public class CardRestControllerV1 {
 
         Card card = cardService.getByNumber(number);
 
-        if (card == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
         cardService.delete(number);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Card>(HttpStatus.NO_CONTENT);
 
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorMessage> handleException(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessage(exception.getMessage()));
     }
 
 }

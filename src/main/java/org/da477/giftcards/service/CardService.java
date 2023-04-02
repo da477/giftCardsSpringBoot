@@ -1,6 +1,8 @@
 package org.da477.giftcards.service;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.da477.giftcards.exception.NotFoundException;
 import org.da477.giftcards.model.Card;
 import org.da477.giftcards.model.Status;
 import org.da477.giftcards.repository.CardRepository;
@@ -33,17 +35,22 @@ public class CardService {
         return repository.findAll();
     }
 
-    public Card getById(Long id) {
+    public Card getById(@NonNull Long id) {
         log.info("IN CardService getById {}", id);
-        return repository.findById(id).orElse(null);
+        return repository
+                .findById(id)
+                .orElseThrow(()-> new NotFoundException("Card with "+id+" isn't found"));
     }
 
-    public Card getByNumber(Long number) {
-        return repository.findByNumber(number).orElse(null);
+    public Card getByNumber(@NonNull Long number) {
+        log.info("IN CardService getByNumber {}", number);
+        return repository
+                .findByNumber(number)
+                .orElseThrow(() -> new NotFoundException("Card with "+number+" isn't found"));
     }
 
     public Card getLastOne() {
-        log.info("IN CardService getLastOne");
+        log.info("IN CardService getLastOne()");
         return repository.findFirstByOrderByNumberDesc();
     }
 

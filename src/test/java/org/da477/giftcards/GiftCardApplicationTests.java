@@ -17,7 +17,10 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
@@ -121,11 +124,18 @@ class GiftCardApplicationTests {
     @Test
     public void givenNumber_whenGetNotExistingCard_thenStatus404() throws Exception {
 
-        mockMvc.perform(get(REST_URL + "1")
+        MvcResult result = mockMvc.perform(get(REST_URL + "1")
                         .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
                         .with(csrf())
                 )
-                .andExpect(status().isNotFound());
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        assertThat(result.getResponse().getContentAsString(), containsString("isn't found"));
+
     }
 
     @Test

@@ -124,7 +124,7 @@ class GiftCardApplicationTests {
     @Test
     public void givenNumber_whenGetNotExistingCard_thenStatus404() throws Exception {
 
-        MvcResult result = mockMvc.perform(get(REST_URL + "1")
+        mockMvc.perform(get(REST_URL + "1")
                         .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
                         .with(csrf())
                 )
@@ -132,9 +132,7 @@ class GiftCardApplicationTests {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        assertThat(result.getResponse().getContentAsString(), containsString("isn't found"));
+                .andExpect(content().string(containsString("isn't found")));
 
     }
 

@@ -1,5 +1,6 @@
 package org.da477.giftcards.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -24,6 +25,7 @@ public class User extends AbstractBaseEntity {
     @Column(name = "surname")
     private String surname;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", nullable = false)
     private String password;
 

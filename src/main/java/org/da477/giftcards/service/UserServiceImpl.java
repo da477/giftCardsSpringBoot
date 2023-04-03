@@ -28,7 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
+
         user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
+        user.setEmail(user.getEmail().toLowerCase());
 
         String[] sentences = user.getEmail().split("@");
 

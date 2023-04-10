@@ -12,6 +12,7 @@
         <span class="h2"><a href="/">Home</a></span>
 
         <form class="form-group" method="POST" action="/auth/login">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="form-group col-md-6">
                 <label for="email">Email</label>
                 <span class="my-2" th:text="${message}"/>

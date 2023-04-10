@@ -36,35 +36,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+//                .csrf().disable()
                 .authorizeRequests()
-
                 .antMatchers("/api/v1/cards/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/auth/admin/**").hasRole("ADMIN")
                 .antMatchers("/cards/**").hasRole("ADMIN")
-
                 .antMatchers("/").permitAll()
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
 
                 .formLogin()
                 .loginPage("/auth/login").permitAll()
                 .defaultSuccessUrl("/", true)
                 .failureUrl("/auth/login?error")
-
                 .usernameParameter("email")
                 .passwordParameter("password")
-
                 .and()
+
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
-
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/")
                 .and()
+
                 // custom 403 access denied handler
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
         ;
@@ -78,7 +74,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(daoAuthenticationProvider());
+        auth
+                .authenticationProvider(daoAuthenticationProvider());
     }
 
     @Bean

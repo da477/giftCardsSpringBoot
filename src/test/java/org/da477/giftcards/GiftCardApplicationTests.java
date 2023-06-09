@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.da477.giftcards.controller.CardRestControllerV1;
 import org.da477.giftcards.model.Card;
 import org.da477.giftcards.service.CardService;
+import org.da477.giftcards.utils.JsonUtil;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -64,6 +64,19 @@ class GiftCardApplicationTests {
         mockMvc
                 .perform(get(REST_URL)
                         .with(csrf()));
+    }
+
+    @Test
+    @WithMockUser
+    public void deleteLastOneWithInvalidCSRFAndRedirectToForbiddenPage() throws Exception {
+        Card card = cardService.getLastOne();
+        String body = JsonUtil.writeValue(card);
+        mockMvc.perform(delete(REST_URL + card.getNumber())
+                        .content(body)
+                .with(csrf().useInvalidToken()))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/403"));
     }
 
     @Ignore //not ready
@@ -118,7 +131,6 @@ class GiftCardApplicationTests {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.number").value(card.getNumber()));
-
     }
 
     @Test
@@ -183,6 +195,29 @@ class GiftCardApplicationTests {
 
         assertEquals(200, result.getResponse().getStatus());
 
+    }
+
+    @Test
+    public void testUpdateWithdrawalPlusByJson() throws Exception {
+        Card lastCard = cardService.getLastOne();
+        lastCard.setWithdrawal(lastCard.getWithdrawal()+1);
+        String jsonBody = JsonUtil.writeValue(lastCard);
+
+        MvcResult requestResult = mockMvc.perform(post(REST_URL)
+                        .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Card updateCardResponse = JsonUtil.parseResponse(
+                requestResult.getResponse().getContentAsString(),
+                Card.class);
+
+        assertEquals(lastCard.getNumber(), updateCardResponse.getNumber());
+        assertEquals(lastCard.getRest(), updateCardResponse.getRest());
     }
 
 }

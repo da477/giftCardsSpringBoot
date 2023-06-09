@@ -1,6 +1,8 @@
 package org.da477.giftcards.controller;
 
+import org.da477.giftcards.model.Card;
 import org.da477.giftcards.service.CardService;
+import org.da477.giftcards.utils.JsonUtil;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,8 +21,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.da477.giftcards.controller.CardRestControllerV1.REST_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -44,6 +49,7 @@ class CardRestControllerV1Test {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(service.getLastOne().getId()))
                 .andExpect(jsonPath("$.number").value(service.getLastOne().getNumber()))
                 .andReturn();
         assertThat(result.getResponse().getContentAsString(), containsString("\"id\":"));
@@ -65,7 +71,19 @@ class CardRestControllerV1Test {
     }
 
     @Ignore
-    void serialize() throws Exception {
+    void registerInvalid() throws Exception {
+        Card newCard = new Card();
+        newCard.setAmount(1F);
+        newCard.setWithdrawal(0F);
+        String body = JsonUtil.writeValue(newCard);
+        mockMvc.perform(post(REST_URL)
+                        .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
+                        .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+//                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
     }
 
     @Ignore

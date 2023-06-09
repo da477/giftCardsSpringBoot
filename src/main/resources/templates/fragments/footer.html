@@ -11,8 +11,8 @@
             <!-- this is footer -->
             &copy; 2023 <span th:text="${#dates.format(message, 'MM/dd HH:mm:ss')}"/>
             <span sec:authorize="isAuthenticated()">
-                | Logged user: <span sec:authentication="name"></span> |
-                Roles: <span sec:authentication="principal.authorities"></span>
+                | Logged user: <span sec:authentication="principal.username"></span> |
+                Roles: <span sec:authentication="principal.authorities"></span> |
             </span>
         </footer>
     </div>

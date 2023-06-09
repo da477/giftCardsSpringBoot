@@ -47,6 +47,13 @@ public class Card extends AbstractBaseEntity {
             pattern = "MM/dd/yyyy hh:mm:ss")
     private Date lastUpdate = new Date();
 
+    @Column(name = "registered")
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "MM/dd/yyyy hh:mm:ss")
+    private Date registered;
+
     @Column(name = "owner_id")
     private String owner_id;
 

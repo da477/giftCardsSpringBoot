@@ -66,14 +66,10 @@ public class CardRestControllerV1 {
         return new ResponseEntity<>(card, headers, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "{number}")
-    public ResponseEntity<Card> delete(@PathVariable("number") Long number) {
-
-        Card card = cardService.getByNumber(number);
-
-        cardService.delete(number);
-        return new ResponseEntity<Card>(HttpStatus.NO_CONTENT);
-
+    @DeleteMapping(value = "/{number}")
+    public ResponseEntity<String> delete(@PathVariable("number") Long number) {
+        cardService.deleteByNumber(number);
+        return new ResponseEntity<String>("Card deleted successfully!.", HttpStatus.OK);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -81,6 +77,16 @@ public class CardRestControllerV1 {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @PutMapping("/{number}")
+    public ResponseEntity<?> putCard(@PathVariable Long number,
+                                     @RequestBody Card card) {
+
+        return (cardService.existByNumber(number))
+                ? new ResponseEntity<>(saveCard(card), HttpStatus.OK)
+                : new ResponseEntity<>(saveCard(card), HttpStatus.CREATED);
+
     }
 
 }

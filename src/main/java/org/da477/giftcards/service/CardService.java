@@ -31,32 +31,28 @@ public class CardService {
     }
 
     public List<Card> getAll() {
-        log.info("IN CardService getAll");
         return repository.findAll();
     }
 
     public Card getById(@NonNull Long id) {
-        log.info("IN CardService getById {}", id);
         return repository
                 .findById(id)
-                .orElseThrow(()-> new NotFoundException("Card with "+id+" isn't found"));
+                .orElseThrow(() -> new NotFoundException("Card with " + id + " isn't found"));
     }
 
     public Card getByNumber(@NonNull Long number) {
-        log.info("IN CardService getByNumber {}", number);
         return repository
                 .findByNumber(number)
-                .orElseThrow(() -> new NotFoundException("Card with "+number+" isn't found"));
+                .orElseThrow(() -> new NotFoundException("Card with " + number + " isn't found"));
     }
 
     public Card getLastOne() {
-        log.info("IN CardService getLastOne()");
         return repository.findFirstByOrderByNumberDesc();
     }
 
     public Card createOrUpdate(Card card) {
         log.info("IN CardService createOrUpdate {}", card);
-        if (card.isNew() && getByNumber(card.getNumber()) == null) {
+        if (card.isNew()) {
             addNewCard(card);
         } else {
             updateCard(card);
@@ -110,7 +106,11 @@ public class CardService {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i < 10; i++) {
             newNumber = random.nextLong(start + 1);
-            if (getByNumber(newNumber) == null) {
+            try {
+                if (getByNumber(newNumber) == null) {
+                    break;
+                }
+            } catch (NotFoundException exception) {
                 break;
             }
         }
@@ -118,10 +118,13 @@ public class CardService {
     }
 
 
-    public void delete(Long number) {
+    public void deleteByNumber(Long number) {
         log.info("IN CardService delete {}", number);
         repository.deleteByNumber(number);
         repository.flush();
     }
 
+    public boolean existByNumber(Long number) {
+        return repository.existsByNumber(number);
+    }
 }

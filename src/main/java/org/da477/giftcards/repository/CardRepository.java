@@ -21,4 +21,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     void deleteByNumber(Long number);
 
+    boolean existsByNumber(Long number);
+
 }

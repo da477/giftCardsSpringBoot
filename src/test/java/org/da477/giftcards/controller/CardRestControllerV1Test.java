@@ -1,6 +1,7 @@
 package org.da477.giftcards.controller;
 
 import org.da477.giftcards.model.Card;
+import org.da477.giftcards.model.TypeCard;
 import org.da477.giftcards.service.CardService;
 import org.da477.giftcards.utils.JsonUtil;
 import org.junit.Ignore;
@@ -13,18 +14,16 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.*;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.da477.giftcards.controller.CardRestControllerV1.REST_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithMockUser(username = "admin", roles = {"ADMIN"})
 class CardRestControllerV1Test {
+
+    private static final String REST_URL = CardRestControllerV1.REST_URL + '/';
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
@@ -102,7 +103,42 @@ class CardRestControllerV1Test {
     void saveCard() {
     }
 
-    @Ignore
-    void delete() {
+    @Test
+    void deleteByNumber() throws Exception {
+
+        Long numberToDelete = service.getLastOne().getNumber();
+
+        // when -  action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(delete(REST_URL+"{id}", numberToDelete)
+                .with(csrf()));
+
+        // then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print());
+
+        assertNotEquals(service.getLastOne().getNumber(), numberToDelete);
+    }
+
+    @Test
+    public void testCreateNewCard() throws Exception {
+
+        Card newCard = new Card();
+        newCard.setTypeCard(TypeCard.SIMPLE);
+        newCard.setNumber(null);
+        newCard.setOwner_id("1");
+        newCard.setAmount(1F);
+        newCard.setWithdrawal(0.0F);
+
+        String jsonBody = JsonUtil.writeValue(newCard);
+
+        MvcResult requestResult = mockMvc.perform(post(REST_URL)
+                        .with(SecurityMockMvcRequestPostProcessors.user("admin").roles("ADMIN"))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
     }
 }

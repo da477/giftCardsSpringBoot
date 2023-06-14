@@ -14,7 +14,7 @@
         <h3 class="text-left" th:text="${'Update for ' + card.getNumber()}">VALUE</h3>
         <div class="col-md-6">
             <form action="#" th:action="@{/cards/update/{number}(number=${card.number})}" th:object="${card}"
-                  method="post">
+                  th:method="post">
 
                 <div class="row">
                     <div class="form-group col-md-6">

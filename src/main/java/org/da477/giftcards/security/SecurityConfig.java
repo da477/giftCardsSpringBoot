@@ -2,7 +2,6 @@ package org.da477.giftcards.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,22 +14,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
-
+    private final AccessDeniedHandler accessDeniedHandler;
     private final UserDetailsService userDetailService;
 
     //https://bcrypt-generator.com/
     public static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(11);
 
-    @Autowired(required = true)
-    public SecurityConfig(UserDetailsService userDetailService) {
+    @Autowired
+    public SecurityConfig(UserDetailsService userDetailService, AccessDeniedHandler accessDeniedHandler) {
         this.userDetailService = userDetailService;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Override
@@ -63,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // custom 403 access denied handler
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
-        ;
+
     }
 
     @Bean
